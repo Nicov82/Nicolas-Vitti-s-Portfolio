@@ -1,8 +1,8 @@
-package com.proyectoSOLID.logica.entidades;
+package com.proyectosolid.logica.entidades;
 
-import com.proyectoSOLID.logica.clases.entidades.Compra;
-import com.proyectoSOLID.logica.clases.entidades.Producto;
-import com.proyectoSOLID.logica.clases.lugaresCompra.*;
+import com.proyectosolid.logica.clases.entidades.Compra;
+import com.proyectosolid.logica.clases.entidades.Producto;
+import com.proyectosolid.logica.clases.lugaresCompra.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ProductoTest {
 
     private final LugarCompra[] lugaresCompraArray = {
-            new ArgentinaComun(),
-            new ArgentinaFreeShop(),
-            new Brasil(),
-            new ExteriorFreeShop("Brasil")
+            Argentina.getInstance(),
+            FreeShop.getInstance(),
+            new Exterior("Brasil", "R$", 68.99),
+            new FreeShopExterior("Brasil")
     };
 
     @Test

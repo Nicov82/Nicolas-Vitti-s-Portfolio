@@ -1,4 +1,6 @@
 
-{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(œŒƒµøÿÿÿÿ8Ğ™ù±1
+{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(œŒƒµøÿÿÿÿ8÷Ê­á·1
+¶
+java:S6548	"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(¼«Ô°8æ°®á·1
 
-java:S1128"bRemove this unused import 'com.proyectoSOLID.logica.interfaces.gestion.CalculoPrecioTotalCompras'.(½à¶á8±¾ªù±1
+java:S1128"bRemove this unused import 'com.proyectoSOLID.logica.interfaces.gestion.CalculoPrecioTotalCompras'.(½à¶á8Ë­á·1

@@ -1,9 +1,9 @@
-package com.proyectoSOLID.logica.herramientasParaGestora;
+package com.proyectosolid.logica.herramientasParaGestora;
 import static org.mockito.Mockito.*;
-import com.proyectoSOLID.logica.clases.entidades.Compra;
-import com.proyectoSOLID.logica.clases.entidades.Producto;
-import com.proyectoSOLID.logica.clases.herramientasParaGestora.Calculadora;
-import com.proyectoSOLID.logica.clases.lugaresCompra.LugarCompra;
+import com.proyectosolid.logica.clases.entidades.Compra;
+import com.proyectosolid.logica.clases.entidades.Producto;
+import com.proyectosolid.logica.clases.herramientasParaGestora.Calculadora;
+import com.proyectosolid.logica.clases.lugaresCompra.LugarCompra;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CalculadoraTest {
 
-    private Calculadora calculadoraMock; //Usamos un mock de calculadora porque planeo aplicarle el patron Singleton
+    private Calculadora calculadoraMock;
     private Compra compraTest;
     private LugarCompra lugarCompraTest;
 
@@ -29,13 +29,9 @@ public class CalculadoraTest {
         listaProductos.add(producto1);
         listaProductos.add(producto2);
 
-        // Configurar el mock para que devuelva la lista de productos cuando se llame a getListaProductos
         when(compraTest.getListaProductos()).thenReturn(listaProductos);
-
-        // Usar el mock de Compra en lugar de crear una nueva instancia
         when(compraTest.getLugarCompra()).thenReturn(lugarCompraTest);
 
-        this.compraTest = compraTest;
     }
 
 

@@ -1,3 +1,3 @@
-package com.proyectoSOLID.logica.interfaces.gestion;
+package com.proyectosolid.logica.interfaces.gestion;
 
 //Package de interfaces relativas a la gestion  de la aplicación

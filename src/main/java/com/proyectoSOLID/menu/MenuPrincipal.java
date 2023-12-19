@@ -1,170 +1,215 @@
-package com.proyectoSOLID.menu;
-import com.proyectoSOLID.logica.clases.clasesGestoras.Gestora;
+package com.proyectosolid.menu;
+import com.proyectosolid.logica.clases.clasesGestoras.Gestora;
+import com.proyectosolid.logica.clases.entidades.Compra;
+import com.proyectosolid.logica.clases.lugaresCompra.LugarCompra;
 
+
+import java.util.List;
 import java.util.Scanner;
-//Menú de la aplicación (En un futuro quizás tenga un lindo Front End)
+//Luego del refactoring, cambia y se simplifica el Menú Principal de la aplicación. En primer lugar,
+//recibe una instancia de gestora en el constructor, ya no tiene que pasársela de método a método.
 public class MenuPrincipal {
-    private static Scanner leer = new Scanner(System.in);
+    private static MenuPrincipal instancia;
+    private static final Scanner leer = new Scanner(System.in);
+    private final Gestora gestora;
 
-    public static void SaludoBienvenida() {
+    //asignamos como atriburos las listas de la gestora para llamarlas más fácilmente y aumentar la claridad del código.
+    private List<LugarCompra> listaLugaresCompra;
+    private List<LugarCompra> listaFreeShops;
+    private List<Compra> registroDeCompras;
+
+    //Declaramos Strings de Errores de entrada para llamarlos más fácilmente y mejorar la claridad del código.
+    private static final String entradaInvalida = "Entrada inválida. Ingrese un número.";
+    private static final String opcionInvalida = "Opción inválida. Intente nuevamente.";
+
+
+    private MenuPrincipal(Gestora gestora) {
+        this.gestora = gestora;
+    }
+
+    public static MenuPrincipal getInstance(Gestora gestora){
+        if(instancia==null){
+            instancia = new MenuPrincipal(gestora);
+        }
+        return instancia;
+    }
+    public void inicializarMenu() { //Inyectamos al menú sus dependencias. Aseguramos que sus atributos sean los correctos.
+        try {
+            this.listaLugaresCompra = gestora.getRegistroLugaresCompra().getListaLugaresCompra();
+            this.listaFreeShops = gestora.getRegistroLugaresCompra().getLugaresFreeShop();
+            this.registroDeCompras = gestora.getRegistroDeCompras().getListaCompras();
+        } catch (NullPointerException e) {
+            System.err.println("Error: Alguno de los objetos necesarios no ha sido inicializado correctamente.");
+            e.printStackTrace();
+        }
+    }
+
+    public void saludoBienvenida() {
         System.out.println("Bienvenido a la Calculadora viajera Argentina!");
         System.out.println(" ");
     }
 
-    public static void mostrarMenuPrincipal(Gestora gestora) {
-        int opcion=0;
+    public void mostrarMenuPrincipal() {
+            int opcion;
         do {
-            if(opcion!=3){
-                System.out.println("Por favor, elija una opción: ");
-            System.out.println("1) Cargar nueva Compra");
-            System.out.println("2) Ver compras anteriores");
-            System.out.println("3) Salir");
+            opcion=0;
+            System.out.println("Por favor, elija una opción: ");
+            System.out.println("1- Cargar nueva Compra");
+            System.out.println("2- Ver compras anteriores");
+            System.out.println("3- Agregar país");
+            System.out.println("4- Salir");
             System.out.println(" ");
-            }
+
 
             if (leer.hasNextInt()) {
                 opcion = leer.nextInt();
 
                 switch (opcion) {
-                    case 1:
-                       mostrarMenuComprarArgExterior(gestora);
-                        break;
-                    case 2:
-                        if (gestora.getRegistroDeCompras().getListaCompras().isEmpty()){
-                        System.out.println("No hay compras realizadas!");
-                        System.out.println(" ");
-                        break;
-                    }else{
-                        gestora.verInfoListaCompras();
-                        gestora.calcularPrecioTotalCompras();
-                        System.out.println(" ");
-                        break;
+                    case 1 -> mostrarMenuElegirLugarCompra();
+                    case 2 -> {
+                        if (this.gestora.getRegistroDeCompras().getListaCompras().isEmpty()) {
+                            System.out.println("No hay compras realizadas!");
+                            System.out.println(" ");
+                        } else {
+                            gestora.verInfoListaCompras(registroDeCompras);
+                            gestora.calcularPrecioTotalCompras(registroDeCompras);
+                            System.out.println(" ");
                         }
-                    case 3:
+                    }
+                    case 3 -> mostrarMenuAgregarLugarCompra();
+                    case 4 -> {
                         System.out.println("¡Hasta luego!");
                         System.out.println(" ");
-                        break;
-                    default:
-                        System.out.println("Opción inválida. Por favor, elija nuevamente.");
+                    }
+                    default -> {
+                        System.out.println(opcionInvalida);
                         System.out.println(" ");
-                        break;
+                    }
                 }
             } else {
-                System.out.println("Entrada inválida. Por favor, ingrese un número.");
+                System.out.println(entradaInvalida);
                 System.out.println(" ");
                 leer.next();
             }
-        } while (opcion != 3);
+        } while (opcion != 4);
     }
 
-    public static void mostrarMenuComprarArgExterior(Gestora gestora) {
+    public void mostrarMenuElegirLugarCompra() {
+
         int opcion=0;
+        int opcionFreeshop=0;
 
         do {
             System.out.println("Elija según donde haya realizado su compra:");
-            System.out.println("1- Argentina");
-            System.out.println("2- Brasil");
-            System.out.println(" ");
+            for(int i=1; i<=listaLugaresCompra.size(); i++){
+                System.out.print(i+"- ");
+                System.out.println(listaLugaresCompra.get(i-1).getNombre());
+            }
 
             if (leer.hasNextInt()) {
                 opcion = leer.nextInt();
 
-                switch (opcion) {
-                    case 1:
-                        mostrarMenuCompraFreeShopArg(gestora);
-                        break;
-                    case 2:
-                        mostrarMenuCompraFreeShopExterior(gestora);
-                        break;
-                    default:
-                        System.out.println("Opción inválida. Por favor, elija nuevamente.");
-                        System.out.println(" ");
+                if(opcion >= 1 && opcion <= listaLugaresCompra.size()){
+                    do{
+                        System.out.println("Elija según su compra haya sido o no realizada en un FreeShop");
+                        System.out.println("1-Sí");
+                        System.out.println("2-No");
 
-                        break;
+                        if(leer.hasNextInt()){
+                            opcionFreeshop = leer.nextInt();
+
+                            if(opcionFreeshop<0 || opcionFreeshop>2){
+                                System.out.println(opcionInvalida);
+                            }
+
+                        } else{
+                            System.out.println(entradaInvalida);
+                            leer.next();
+                        }
+                    }while(opcionFreeshop!=1 && opcionFreeshop!=2);
+
+                        switch (opcionFreeshop) {
+                            case 1 -> {
+                                gestora.iniciarCompra(registroDeCompras, listaFreeShops.get(opcion - 1));
+                                mostrarMenuAgregarProducto();
+                            }
+                            case 2 -> {
+                                gestora.iniciarCompra(registroDeCompras, listaLugaresCompra.get(opcion - 1));
+                                mostrarMenuAgregarProducto();
+                            }
+                            default -> System.out.println(opcionInvalida);
+                        }
+
+
+                } else {
+                    System.out.println(opcionInvalida);
                 }
             } else {
                 System.out.println("Entrada inválida. Por favor, ingrese un número.");
-                leer.next(); // Limpia el buffer del scanner
+                leer.next();
                 System.out.println(" ");
             }
-        } while (opcion != 1 && opcion != 2);
+        } while (opcion < 1 || opcion > listaFreeShops.size());
     }
 
-    public static void mostrarMenuCompraFreeShopArg(Gestora gestora) {
+    public  void mostrarMenuAgregarLugarCompra(){
         int opcion=0;
-
-        do {
-            System.out.println("Elija según su compra haya sido realizada o no en un Free shop:");
-            System.out.println("1- Sí");
-            System.out.println("2- No");
-            System.out.println(" ");
-
-            if (leer.hasNextInt()) {
+        do{
+            System.out.println("1-Agregar nuevo país a la lista.");
+            System.out.println("2-Volver");
+            if (leer.hasNextInt()){
                 opcion = leer.nextInt();
-
-                switch (opcion) {
-                    case 1:
-                        gestora.iniciarCompra(gestora.getListaLugaresCompra().get(1));
-                        menuAgregarProducto(gestora);
-                        System.out.println(" ");
-                        break;
-                    case 2:
-                        gestora.iniciarCompra(gestora.getListaLugaresCompra().get(0));
-                        menuAgregarProducto(gestora);
-                        System.out.println(" ");
-                        break;
-                    default:
-                        System.out.println("Opción inválida. Por favor, elija nuevamente.");
-                        System.out.println(" ");
-                        break;
+                leer.nextLine();
+                if(opcion<1 || opcion>2){
+                    System.out.println(opcionInvalida);
                 }
-            } else {
-                System.out.println("Entrada inválida. Por favor, ingrese un número.");
-                System.out.println(" ");
-                leer.next(); // Limpia el buffer del scanner
+            } else{
+                System.out.println(entradaInvalida);
+                leer.next();
             }
-        } while (opcion != 1 && opcion != 2);
+        }while(opcion !=1 && opcion!=2);
+
+            switch (opcion) {
+                case 1 -> {
+                    System.out.println("Ingrese el nombre del país que desea agregar a la Lista:");
+                    String nombrePais = leer.nextLine();
+                    System.out.println("Ahora ingrese el signo monetario correspondiente al país a agregar:");
+                    String signoMonetarioPais = leer.nextLine();
+                    double valorEnPesosMonedaPais=0;
+
+
+                    do {
+                        System.out.println("Por último, ingrese el valor oficial EN PESOS ARGENTINOS de la moneda del país elegido:");
+
+                        if (leer.hasNextDouble()) {
+                            valorEnPesosMonedaPais = leer.nextDouble();
+
+                            if (valorEnPesosMonedaPais <= 0) {
+                                System.out.println("El valor de la moneda debe ser positivo!");
+                            }
+                        } else {
+                            System.out.println(entradaInvalida);
+                            leer.next(); // Limpiamos la entrada no válida
+                        }
+
+                    } while (valorEnPesosMonedaPais <= 0);
+
+                    leer.nextLine();
+                    gestora.agregarLugarCompra(nombrePais, signoMonetarioPais, valorEnPesosMonedaPais);
+                    System.out.println(" ");
+                    System.out.println(nombrePais + " ha sido agregado a la lista de países!");
+                    mostrarMenuAgregarLugarCompra();
+                }
+                case 2 -> mostrarMenuPrincipal();
+                default -> System.out.println(opcionInvalida);
+            }
+
     }
 
-    public static void mostrarMenuCompraFreeShopExterior(Gestora gestora) {
-        int opcion=0;
-
-        do {
-            System.out.println("Elija según su compra haya sido realizada o no en un Free shop:");
-            System.out.println("1- Sí");
-            System.out.println("2- No");
-            System.out.println(" ");
-
-            if (leer.hasNextInt()) {
-                opcion = leer.nextInt();
-
-                switch (opcion) {
-                    case 1:
-                        gestora.iniciarCompra(gestora.getListaLugaresCompra().get(3));
-                        menuAgregarProducto(gestora);
-                        System.out.println(" ");
-                        break;
-                    case 2:
-                        gestora.iniciarCompra(gestora.getListaLugaresCompra().get(2));
-                        menuAgregarProducto(gestora);
-                        System.out.println(" ");
-                        break;
-                    default:
-                        System.out.println("Opción inválida. Por favor, elija nuevamente.");
-                        System.out.println(" ");
-                        break;
-                }
-            } else {
-                System.out.println("Entrada inválida. Por favor, ingrese un número.");
-                System.out.println(" ");
-                leer.next(); // Limpia el buffer del scanner
-            }
-        } while (opcion != 1 && opcion != 2);
-    }
-
-    public static void menuAgregarProducto(Gestora gestora) {
+    public  void mostrarMenuAgregarProducto() {
         String nombre;
-        double precio;
+        double precio=0;
+        Compra compraActual = registroDeCompras.get(Gestora.getNumeroDeCompra());
 
         do {
             System.out.println("Ingrese el nombre del Producto comprado:");
@@ -175,51 +220,45 @@ public class MenuPrincipal {
             } else {
                 System.out.println("Nombre inválido. Por favor, ingrese un texto.");
                 System.out.println(" ");
-                leer.next(); // Limpia el buffer del scanner
-            }
-        } while (true);
-
-        do {
-            System.out.println("Ingrese el precio del Producto comprado -en la moneda correspondiente al país de la compra -dólar si fue comprado en Free shop!.:");
-            System.out.println(" ");
-
-            if (leer.hasNextDouble()) {
-                precio = leer.nextDouble();
-                break;
-            } else {
-                System.out.println("Precio inválido. Por favor, ingrese un número.");
-                System.out.println(" ");
                 leer.next();
             }
         } while (true);
 
-        gestora.agregarProducto(nombre, precio, gestora.getRegistroDeCompras().getListaCompras().get(gestora.getNumeroDeCompra()));
+        do {
+            System.out.println("Ingrese el precio del Producto comprado -en "+ compraActual.getLugarCompra().getSignoMonetario()+"-:");
+            System.out.println(" ");
+
+            if (leer.hasNextDouble()) {
+                precio = leer.nextDouble();
+
+                if(precio<0){
+                    System.out.println("El precio debe ser positivo! vuelva a intentar.");
+                }
+
+            }else {
+                System.out.println("Precio inválido. Por favor, ingrese un número.");
+                System.out.println(" ");
+                leer.next();
+            }
+        } while(precio<0);
+
+        this.gestora.agregarProducto(nombre, precio, compraActual);
         String respuesta;
 
         do{
-            System.out.println("¿Desea añadir otro producto? (S/N");
+            System.out.println("¿Desea añadir otro producto? (S/N)");
             System.out.println(" ");
             respuesta = leer.next();
 
-            switch (respuesta){
-                case ("S"):
-                    menuAgregarProducto(gestora);
-                case("s"):
-                    menuAgregarProducto(gestora);
-                case "N":
-                    gestora.calcularCostoCompra(gestora.getRegistroDeCompras().getListaCompras().get(gestora.getNumeroDeCompra()));
-                    gestora.verInfoCompra(gestora.getRegistroDeCompras().getListaCompras().get((gestora.getNumeroDeCompra())));
+            switch (respuesta) {
+                case ("S"), ("s") -> mostrarMenuAgregarProducto();
+                case ("N"), ("n") -> {
+                    this.gestora.calcularCostoCompra(compraActual);
+                    this.gestora.verInfoCompra(compraActual);
                     System.out.println(" ");
-                    mostrarMenuPrincipal(gestora);
-                    break;
-                case "n":
-                    gestora.calcularCostoCompra(gestora.getRegistroDeCompras().getListaCompras().get(gestora.getNumeroDeCompra()));
-                    gestora.verInfoCompra(gestora.getRegistroDeCompras().getListaCompras().get((gestora.getNumeroDeCompra())));
-                    System.out.println(" ");
-                    mostrarMenuPrincipal(gestora);
-                    break;
-                default:
-                    System.out.println("Opción inválida. Intente nuevamente");
+                    mostrarMenuPrincipal();
+                }
+                default -> System.out.println(opcionInvalida);
             }
         }while(!respuesta.equalsIgnoreCase("s")&& !respuesta.equalsIgnoreCase("n"));
 

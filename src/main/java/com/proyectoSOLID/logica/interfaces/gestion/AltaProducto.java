@@ -1,9 +1,6 @@
-package com.proyectoSOLID.logica.interfaces.gestion;
+package com.proyectosolid.logica.interfaces.gestion;
 
-import com.proyectoSOLID.logica.clases.entidades.Compra;
-import com.proyectoSOLID.logica.clases.entidades.Producto;
-
-import java.util.List;
+import com.proyectosolid.logica.clases.entidades.Compra;
 
 public interface AltaProducto {
     void agregarProducto(String nombre, double precio, Compra compra);

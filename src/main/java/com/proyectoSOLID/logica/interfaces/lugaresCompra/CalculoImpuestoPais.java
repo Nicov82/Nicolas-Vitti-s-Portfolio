@@ -1,4 +1,4 @@
-package com.proyectoSOLID.logica.interfaces.lugaresCompra;
+package com.proyectosolid.logica.interfaces.lugaresCompra;
 
 public interface CalculoImpuestoPais {
     double calcularImpuestoPais(double monto);

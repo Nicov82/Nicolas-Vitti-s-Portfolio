@@ -1,21 +1,18 @@
-package com.proyectoSOLID.logica.clases.entidades;
-
-import com.proyectoSOLID.logica.clases.entidades.Compra;
+package com.proyectosolid.logica.clases.entidades;
 
 //Clase que almacena datos de los productos
 
 public class Producto {
     private String nombre;
     private double precio;
-
     private double precioEnPesos;
-   private Compra compra; //Esto lo hice para facilitarme poner el signo monetario en el toString ()
+   private Compra compra; //Hacer una relación ManyToOne Producto/compra facilita colocar el signo monetario en el toString () (llamás al getSignoMonetario de la Compra)-.
 
 
 
     public Producto(String nombre, double precio, Compra compra) {
         this.nombre = nombre;
-        this.precio = precio;
+        this.precio = Math.floor(precio * 100) / 100;
         this.compra = compra;
     }
 
@@ -24,8 +21,10 @@ public class Producto {
     }
 
     public void setPrecioEnPesos(double precioEnPesos) {
-        this.precioEnPesos = precioEnPesos;
+        // Truncar a dos decimales
+        this.precioEnPesos = Math.floor(precioEnPesos * 100) / 100;
     }
+
 
     public String getNombre() {
         return nombre;
@@ -40,7 +39,8 @@ public class Producto {
     }
 
     public void setPrecio(double precio) {
-        this.precio = precio;
+        // Truncar a dos decimales
+        this.precio = Math.floor(precio * 100) / 100;
     }
     public Compra getCompra() {
         return compra;

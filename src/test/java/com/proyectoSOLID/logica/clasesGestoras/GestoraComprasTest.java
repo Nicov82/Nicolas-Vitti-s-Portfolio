@@ -1,8 +1,8 @@
-package com.proyectoSOLID.logica.clasesGestoras;
-import com.proyectoSOLID.logica.clases.clasesGestoras.*;
-import com.proyectoSOLID.logica.clases.entidades.*;
-import com.proyectoSOLID.logica.clases.herramientasParaGestora.*;
-import com.proyectoSOLID.logica.clases.lugaresCompra.*;
+package com.proyectosolid.logica.clasesGestoras;
+import com.proyectosolid.logica.clases.clasesGestoras.*;
+import com.proyectosolid.logica.clases.entidades.*;
+import com.proyectosolid.logica.clases.herramientasParaGestora.*;
+import com.proyectosolid.logica.clases.lugaresCompra.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ public class GestoraComprasTest {
     }
 
     @Test
-    void testIniciarCompra() { //SEEEEEEE
+    void testIniciarCompra() {
         List<Compra> listaCompras = new ArrayList<>();
         doCallRealMethod().when(gestoraMock).iniciarCompra(listaCompras,lugarCompraMock);
         // Llamamos al método que queremos probar

@@ -1,28 +1,29 @@
-package com.proyectoSOLID.logica.clases.entidades;
+package com.proyectosolid.logica.clases.entidades;
 
-import com.proyectoSOLID.logica.clases.lugaresCompra.LugarCompra;
+import com.proyectosolid.logica.clases.lugaresCompra.LugarCompra;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//Clase que almacena datos de las compras.
-    public class Compra { //La responsabilidad de este clase es dar los atributos y constructor para las compras.
+
+    public class Compra {
         private static int contadorCompras = 0;
         private List<Producto> listaProductos;
         private String nombre;
 
         private double precioTotal;
 
-        private double PrecioTotalEnPesos;
-        public LugarCompra getLugarCompra() {
-            return lugarCompra;
-        }
+        private double precioTotalEnPesos;
 
-        public void setLugarCompra(LugarCompra lugarCompra) {
-            this.lugarCompra = lugarCompra;
-        }
+        private LugarCompra lugarCompra; //Podría ser un campo final pero hipotéticamente se podría añadir una función para "corregir" el Lugar dw Compra mal ingresado.
 
-        private LugarCompra lugarCompra;
+
+        public Compra(LugarCompra lugarCompra) {
+                contadorCompras++;
+                this.nombre = "Compra " + contadorCompras;
+                listaProductos = new ArrayList<>();
+                this.lugarCompra = lugarCompra;
+            }
 
         public double getPrecioTotal() {
             return precioTotal;
@@ -33,18 +34,15 @@ import java.util.List;
         }
 
         public double getPrecioTotalEnPesos() {
-            return PrecioTotalEnPesos;
+            return precioTotalEnPesos;
         }
 
         public void setPrecioTotalEnPesos(double precioTotalEnPesos) {
-            this.PrecioTotalEnPesos = precioTotalEnPesos;
+            this.precioTotalEnPesos = precioTotalEnPesos;
         }
 
-        public Compra(LugarCompra lugarCompra) {
-            contadorCompras++;
-            this.nombre = "Compra " + contadorCompras;
-            listaProductos = new ArrayList<Producto>();
-            this.lugarCompra = lugarCompra;
+        public LugarCompra getLugarCompra() {
+            return lugarCompra;
         }
 
         public List<Producto> getListaProductos() {
@@ -53,7 +51,7 @@ import java.util.List;
 
         public void setListaProductos(List<Producto> listaProductos) {
             this.listaProductos = listaProductos;
-        }
+        } //Método no usado, puede ser útil para testeos futuros.
 
         public void setNombre(String nombre) {
             this.nombre = nombre;
@@ -68,6 +66,6 @@ import java.util.List;
             return nombre +
                     " - Lugar: "+lugarCompra.getNombre() +
                     " - Precio: "+ lugarCompra.getSignoMonetario()+precioTotal+
-                    " - Precio convertido: ARS$"+ PrecioTotalEnPesos;
+                    " - Precio convertido: ARS$"+ precioTotalEnPesos;
         }
     }

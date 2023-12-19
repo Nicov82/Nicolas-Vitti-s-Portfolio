@@ -1,42 +1,41 @@
-package com.proyectoSOLID.logica.clases.clasesGestoras;
+package com.proyectosolid.logica.clases.clasesGestoras;
 
-import com.proyectoSOLID.logica.clases.entidades.*;
-import com.proyectoSOLID.logica.clases.lugaresCompra.*;
-import com.proyectoSOLID.logica.interfaces.gestion.*;
-import com.proyectoSOLID.logica.interfaces.lugaresCompra.CalculoCostoCompra;
+import com.proyectosolid.logica.clases.entidades.*;
+import com.proyectosolid.logica.clases.lugaresCompra.*;
+import com.proyectosolid.logica.interfaces.gestion.*;
+import com.proyectosolid.logica.interfaces.lugaresCompra.CalculoCostoCompra;
 
-import java.util.ArrayList;
 import java.util.List;
 
-//Clase que centraliza todos los métodos de gestión de la aplicación.
-public class Gestora implements NuevaCompraGestora, AltaProducto, CalculoCostoCompra, DisplayInfoCompra, DisplayInfoListaComprasGestora, CalculoPrecioTotalComprasGestora { //Esta clase Centraliza TODA la App (no sé s hacia falta una capa más de abstracción pero habiendo llegado hasta acá elegí profundizar.
-    private static int numeroDeCompra =-1;
+
+//Clase que centraliza todos los métodos de gestión de la aplicación (llamando a las Gestoras de Compras y Visualización que a su vez implementan los métodos). Es una implementación del patrón Facade.
+public class Gestora implements NuevaCompra, AltaProducto, CalculoCostoCompra, DisplayInfoCompra, DisplayInfoListaCompras, CalculoPrecioTotalCompras, NuevoLugarCompra { //Esta clase Centraliza TODA la App (no sé s hacia falta una capa más de abstracción pero habiendo llegado hasta acá elegí profundizar.
+    private static Gestora instancia;
+    private static int numeroDeCompra =-1; //Variable para asignarle a cada compra como nombre "Compra n" secuancialmente.
     private GestoraCompras gestoraCompras;
     private GestoraVisualizacion gestoraVisualizacion;
     private RegistroDeCompras registroDeCompras;
+    private RegistroLugaresCompra registroLugaresCompra;
 
-    private List<LugarCompra> listaLugaresCompra;
 
-    public Gestora() {
-        this.gestoraCompras = new GestoraCompras();
-        this.gestoraVisualizacion = new GestoraVisualizacion();
-        this.listaLugaresCompra = new ArrayList<>();
-        this.registroDeCompras = new RegistroDeCompras();
-        LugarCompra argentinaComun = new ArgentinaComun();
-        LugarCompra argentinaFreeShop = new ArgentinaFreeShop();
-        LugarCompra brasil = new Brasil();
-        LugarCompra exteriorFreeShop = new ExteriorFreeShop("Brasil");// En este caso es Brasil, el codigo esta preparado para ser extendido;
-
-        // Añadir los lugares de compra a la lista
-        listaLugaresCompra.add(argentinaComun);
-        listaLugaresCompra.add(argentinaFreeShop);
-        listaLugaresCompra.add(brasil);
-        listaLugaresCompra.add(exteriorFreeShop);
+    private Gestora() {
     }
 
-    public static void setNumeroDeCompra(int numeroDeCompra) {
-        Gestora.numeroDeCompra = numeroDeCompra;
+    public static Gestora getInstance(){ //Patrón Singleton para crear una sola gestora y tener punto de acceso a ella.
+        if (instancia == null){
+            instancia = new Gestora();
+        }
+        return instancia;
     }
+
+    public RegistroLugaresCompra getRegistroLugaresCompra() {
+        return registroLugaresCompra;
+    }
+
+    public void setRegistroLugaresCompra(RegistroLugaresCompra registroLugaresCompra) {
+        this.registroLugaresCompra = registroLugaresCompra;
+    }
+
 
 
     public RegistroDeCompras getRegistroDeCompras() {
@@ -59,16 +58,6 @@ public class Gestora implements NuevaCompraGestora, AltaProducto, CalculoCostoCo
         this.gestoraVisualizacion = gestoraVisualizacion;
     }
 
-
-
-    public List<LugarCompra> getListaLugaresCompra() {
-        return listaLugaresCompra;
-    }
-
-    public void setListaLugaresCompra(List<LugarCompra> listaLugaresCompra) {
-        this.listaLugaresCompra = listaLugaresCompra;
-    }
-
     public GestoraCompras getGestoraCompras() {
         return gestoraCompras;
     }
@@ -78,36 +67,64 @@ public class Gestora implements NuevaCompraGestora, AltaProducto, CalculoCostoCo
     }
 
     @Override
-    public void iniciarCompra(LugarCompra lugarCompra) {
+    public void iniciarCompra(List<Compra> listaCompras, LugarCompra lugarCompra) {
+        if (this.getGestoraCompras() == null) {
+            throw new IllegalStateException("La gestora de compras no está disponible. No se puede iniciar una nueva compra.");
+        }
         numeroDeCompra++;
-        this.getGestoraCompras().iniciarCompra(this.getRegistroDeCompras().getListaCompras(), lugarCompra);
+        this.getGestoraCompras().iniciarCompra(listaCompras, lugarCompra);
     }
 
     @Override
     public void agregarProducto(String nombre, double precio, Compra compra) {
+        if (this.getGestoraCompras() == null) {
+            throw new IllegalStateException("La gestora de compras no está disponible. No se puede agregar un producto a la compra.");
+        }
         this.getGestoraCompras().agregarProducto(nombre, precio, compra);
     }
 
     @Override
     public double calcularCostoCompra(Compra compra) {
-        return (this.getGestoraCompras().calcularCostoCompra(compra));
+        if (this.getGestoraCompras() == null) {
+            throw new IllegalStateException("La gestora de compras no está disponible. No se puede calcular el costo de la compra.");
+        }
+        return this.getGestoraCompras().calcularCostoCompra(compra);
     }
-
 
 
     @Override
     public void verInfoCompra(Compra compra) {
+        if (this.getGestoraVisualizacion() == null) {
+            throw new IllegalStateException("La gestora de visualización no está disponible. No se puede ver la información de la compra.");
+        }
         this.getGestoraVisualizacion().verInfoCompra(compra);
     }
 
     @Override
-    public void verInfoListaCompras() {
-        this.getGestoraVisualizacion().verInfoListaCompras(this.getRegistroDeCompras().getListaCompras());
+    public void verInfoListaCompras(List<Compra> listaDeCompras) {
+        if (this.getGestoraVisualizacion() == null) {
+            throw new IllegalStateException("La gestora de visualización no está disponible. No se puede ver la información de la lista de compras.");
+        }
+        if (this.getRegistroDeCompras() == null) {
+            throw new IllegalStateException("El registro de compras no está disponible. No se puede ver la información de la lista de compras.");
+        }
+        this.getGestoraVisualizacion().verInfoListaCompras(listaDeCompras);
     }
 
-
     @Override
-    public void calcularPrecioTotalCompras() {
-        this.getGestoraCompras().calcularPrecioTotalCompras(this.getRegistroDeCompras().getListaCompras());
+    public void calcularPrecioTotalCompras(List<Compra> listaDeCompras) {
+        if (this.getGestoraCompras() == null) {
+            throw new IllegalStateException("La gestora de compras no está disponible. No se puede calcular el precio total de las compras.");
+        }
+        if (this.getRegistroDeCompras() == null) {
+            throw new IllegalStateException("El registro de compras no está disponible. No se puede calcular el precio total de las compras.");
+        }
+        this.getGestoraCompras().calcularPrecioTotalCompras(listaDeCompras);
+    }
+
+    //Nuevo método para agregar países a la lista de Lugares de Compra (agrega automáticamente su FreeShop correspondiente).
+    @Override
+    public void agregarLugarCompra(String nombre, String signoMonetario, double valorEnPesosMoneda) {
+        this.getRegistroLugaresCompra().agregarLugarCompra(nombre, signoMonetario, valorEnPesosMoneda);
     }
 }

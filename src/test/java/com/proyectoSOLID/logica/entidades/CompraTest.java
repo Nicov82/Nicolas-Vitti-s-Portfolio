@@ -1,7 +1,7 @@
-package com.proyectoSOLID.logica.entidades;
+package com.proyectosolid.logica.entidades;
 
-import com.proyectoSOLID.logica.clases.entidades.Compra;
-import com.proyectoSOLID.logica.clases.lugaresCompra.*;
+import com.proyectosolid.logica.clases.entidades.Compra;
+import com.proyectosolid.logica.clases.lugaresCompra.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +12,10 @@ public class CompraTest { //Para testear que funcione el constructor asignacndo 
                             // Y también que funcione el toString() con distintos signos moentarios según el lugar de compra
     private int contadorCompras = 0; // Variable de contador para que cada Test arranque en Compra 1
     private final LugarCompra[] lugaresCompraArray = {
-            new ArgentinaComun(),
-            new ArgentinaFreeShop(),
-            new Brasil(),
-            new ExteriorFreeShop("Brasil")
+            Argentina.getInstance(),
+            FreeShop.getInstance(),
+            new Exterior("Brasil", "R$", 68.99 ),
+            new FreeShopExterior("")
     };
 
     @BeforeEach

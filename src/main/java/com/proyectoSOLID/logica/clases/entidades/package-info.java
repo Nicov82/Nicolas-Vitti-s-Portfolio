@@ -1,3 +1,3 @@
-package com.proyectoSOLID.logica.clases.entidades;
+package com.proyectosolid.logica.clases.entidades;
 
-//Package de clases que representan entidades del mundo real
+//Package de clases que representan entidades de la aplicación.

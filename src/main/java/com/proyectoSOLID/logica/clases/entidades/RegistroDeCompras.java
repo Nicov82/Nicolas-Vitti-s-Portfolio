@@ -1,12 +1,11 @@
-package com.proyectoSOLID.logica.clases.entidades;
-
-import com.proyectoSOLID.logica.interfaces.gestion.CalculoPrecioTotalCompras;
+package com.proyectosolid.logica.clases.entidades;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //Clase para llevar registro de compras en una entidad aparte.
-public class RegistroDeCompras {
+public class RegistroDeCompras { //No aplicamos Singleton, ya que en futuras actualizaciones podrían guardarse distitnos registros por viaje, mes, etc.
+
     private List<Compra> listaCompras;
 
     public RegistroDeCompras() {
@@ -19,7 +18,7 @@ public class RegistroDeCompras {
 
     public void setListaCompras(List<Compra> listaCompras) {
         this.listaCompras = listaCompras;
-    }
+    } //Método no usado, pero puede ser útil para futuros tests.
 
 
 }

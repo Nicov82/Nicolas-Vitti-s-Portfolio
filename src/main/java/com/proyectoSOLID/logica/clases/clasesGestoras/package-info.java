@@ -1,5 +1,5 @@
-package com.proyectoSOLID.logica.clases.clasesGestoras;
+package com.proyectosolid.logica.clases.clasesGestoras;
 
-//Clases Gestoras que centralizan las implementaciones de la aplicación
-//*Las clases llevaron un leve refactoreo en esta primera etapa (para acceder a sus atributos mediante getters en sus propios
-//métodos y facilitar el testeo mediante mocks).
+//Clases Gestoras que centralizan las implementaciones de la aplicación (la clase GESTORA actúa como
+// Fachada, es decir, que el usuario solo interactúa con ella, que se ocupa de llamar a otras clases que
+//implementan los métodos correspondientes.
